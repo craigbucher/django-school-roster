@@ -1,9 +1,5 @@
-from django.db import models
-import csv
+import json
 import os
-from classes.person import Person
-from classes.staff import Staff
-from classes.student import Student
 
 class Person:
 
@@ -20,13 +16,32 @@ class Person:
         
         people = []
         
-        with open(file_path) as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                person = cls(**row)
-                people.append(person)
-
+        file = open(file_path)
+        data = json.load(file)
+        for item in data:
+            person = cls(**item)
+            people.append(person)
         return people
+
+class Staff(Person):
+    DATA_FILE = "../data/staff.json"
+
+    def __init__(self, name, age, password, role, employee_id):
+        super().__init__(name, age, password, role)
+        self.employee_id = employee_id
+
+    def __repr__(self):
+        return f"staff: {self.name}"
+
+class Student(Person):
+    DATA_FILE = "../data/students.json"
+
+    def __init__(self, name, age, password, role, school_id):
+        super().__init__(name, age, password, role)
+        self.school_id = school_id
+
+    def __str__(self):
+        return f"{self.name.upper()}\n--------------\nage: {self.age}\nid: {self.school_id}"
 
 class School:
     def __init__(self, name):
@@ -38,32 +53,10 @@ class School:
         for student in self.students:
             if student.school_id == school_id:
                 return student
-        
         return None
 
     def find_staff_by_id(self, employee_id):
         for staff in self.staff:
             if staff.employee_id == employee_id:
                 return staff
-        
         return None
-
-    class Staff(Person):
-        DATA_FILE = "../data/staff.csv"
-
-        def __init__(self, name, age, password, role, employee_id):
-            super().__init__(name, age, password, role)
-            self.employee_id = employee_id
-
-        def __repr__(self):
-            return f"staff: {self.name}"
-
-class Student(Person):
-    DATA_FILE = "../data/students.csv"
-
-    def __init__(self, name, age, password, role, school_id):
-        super().__init__(name, age, password, role)
-        self.school_id = school_id
-
-    def __str__(self):
-        return f"{self.name.upper()}\n--------------\nage: {self.age}\nid: {self.school_id}"
