@@ -24,7 +24,7 @@ def staff_detail(request, employee_id):
     my_data = {
         'staff': School.find_staff_by_id(my_school, employee_id)
     }
-    return render(request, 'pages/find_staff.html', my_data)
+    return render(request, 'pages/staff_detail.html', my_data)
 
 
 def list_students(request):
@@ -38,4 +38,4 @@ def student_detail(request, student_id):
     my_data = {
         'student': School.find_student_by_id(my_school, student_id)
     }
-    return render(request, 'pages/find_student.html', my_data)
+    return render(request, 'pages/student_detail.html', my_data)
